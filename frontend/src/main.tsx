@@ -7,7 +7,7 @@ import { GlobalContextProvider } from "./context/GlobalContext.tsx"
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <GlobalContextProvider>
-      <App />
+      <App  />
     </GlobalContextProvider>
   </StrictMode>
 )

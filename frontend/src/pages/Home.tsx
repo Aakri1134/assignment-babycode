@@ -1,13 +1,17 @@
 import axios from "axios"
 import { useEffect, useRef, useState } from "react"
+import { signOut } from "../utils/auth"
+import { useGlobalContext } from "../context/GlobalContext"
+import { Navigate } from "react-router"
 
 const Home = () => {
   const [data, setData] = useState<Students | err>({
     err: "Data not fetched",
   })
   const [loading, setLoading] = useState<boolean>(false)
-
   const loadingTimeout = useRef<any>(null)
+  const context = useGlobalContext()
+
 
   const callBackend = async () => {
     try {
@@ -22,13 +26,15 @@ const Home = () => {
     setLoading(false)
   }
 
+
   useEffect(() => {
-    if (loading) loadingTimeout.current = setTimeout(() => {
+    if (loading)
+      loadingTimeout.current = setTimeout(() => {
         setData({
-            err : "Session Timed Out, Try Again Later"
+          err: "Session Timed Out, Try Again Later",
         })
         setLoading(false)
-    }, 10000)
+      }, 10000)
     else clearTimeout(loadingTimeout.current)
   }, [loading])
 
@@ -37,25 +43,34 @@ const Home = () => {
     callBackend()
   }, [])
 
+
   return (
-    <div>
+    <div className={` ${context?.mode}`}>
+      {context && !context.loggedIn && <Navigate to="/login" />}
       {loading ? (
         <>loading...</>
       ) : "err" in data ? (
         data.err
       ) : (
         <>
-        {data.map((student : student) => {
-            return(
-                <div key={student.roll}>
-                    <h1>{student.name}</h1>
-                    <h2>{student.email}</h2>
-                    <h3>{student.department}</h3>
-                </div>
+          {data.map((student: student) => {
+            return (
+              <div key={student.roll}>
+                <h1>{student.name}</h1>
+                <h2>{student.email}</h2>
+                <h3>{student.department}</h3>
+              </div>
             )
-        })}
+          })}
         </>
       )}
+      <button
+        onClick={() => {
+          signOut()
+        }}
+      >
+        Sign Out
+      </button>
     </div>
   )
 }
