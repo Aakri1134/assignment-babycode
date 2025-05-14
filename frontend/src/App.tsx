@@ -1,26 +1,49 @@
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { createBrowserRouter, Navigate, RouterProvider} from 'react-router'
 import './App.css'
 import Home from './pages/Home'
 import New from './pages/New'
 import Update from './pages/Update'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import ErrorPage from './pages/Error'
+import { useGlobalContext } from './context/GlobalContext'
 
 function App() {
 
+  const context = useGlobalContext()
+
+  const router = createBrowserRouter([
+    {
+      path : '/',
+      element : (context && context.loggedIn)? <Home/> : <Navigate to='/login'/>,
+      errorElement : <ErrorPage/>
+    },
+    {
+      path : '/new',
+      element : (context && context.loggedIn)? <New/> : <Navigate to='/login'/>,
+      errorElement : <ErrorPage/>
+    },
+    {
+      path : '/login',
+      element : <Login/>,
+      errorElement : <ErrorPage/>
+    },
+    {
+      path : '/signup',
+      element : <Signup/>,
+      errorElement : <ErrorPage/>
+    },
+    {
+      path : '/update',
+      element : (context && context.loggedIn)? <Update/> : <Navigate to='/login'/>,
+      errorElement : <ErrorPage/>,
+    }
+
+  ])
+
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Home/>}/>
-          <Route path='new' element={<New/>}/>
-          <Route path='update' element={<Update/>}/>
-          <Route path='auth'>
-              <Route path='login' element={<Login/>}/>
-              <Route path='signup' element={<Signup/>}/>
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <RouterProvider router={router}/>
     </>
   )
 }
