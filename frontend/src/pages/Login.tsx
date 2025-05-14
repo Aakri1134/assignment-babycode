@@ -44,6 +44,8 @@ const Login = () => {
 
   return (
     <div className=" h-screen">
+      <ModeToggle className=" absolute right-1 top-2"/>
+      {errorPopup && <ErrorPopup className=" absolute bottom-1 right-1">{errorMessage}</ErrorPopup>}
     <div
       className={` ${context.mode} flex justify-center items-center h-screen flex-col bg-backgroundPrimary`}
     >
